@@ -72,6 +72,12 @@ packages = ["pysubs2"]
 [tool.mypy]
 files = ["pysubs2", "tests/test_*.py"]
 
+[tool.pytest.ini_options]
+# Keep collection inside the test suite. Without this, plugins such as
+# pytest-relaxed also collect docs/conf.py and package modules when pytest is
+# invoked from the repository root.
+testpaths = ["tests"]
+
 [tool.coverage.run]
 branch = true
 

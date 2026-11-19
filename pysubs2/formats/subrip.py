@@ -149,7 +149,7 @@ class SubripFormat(FormatBase):
         """
         See :meth:`pysubs2.formats.FormatBase.to_file()`
 
-        Italic, underline and strikeout styling is supported.
+        Bold, italic, underline and strikeout styling is supported.
 
         Keyword args:
             apply_styles: If False, do not write any styling (ignore line style
@@ -179,8 +179,13 @@ class SubripFormat(FormatBase):
             if keep_ssa_tags:
                 body.append(text)
             else:
-                for fragment, sty in parse_tags(text, style, subs.styles):
+                # Skip empty fragments: override sequences such as {\i1}{\b1} produce
+                # them, and emitting <i></i> for each would make repeated SRT saves
+                # grow the file and re-parse into spurious tags.
+                for fragment, sty in parse_tags(text, style, subs.styles, skip_empty_fragments=True):
                     if apply_styles:
+                        if sty.bold:
+                            fragment = f"<b>{fragment}</b>"
                         if sty.italic:
                             fragment = f"<i>{fragment}</i>"
                         if sty.underline:

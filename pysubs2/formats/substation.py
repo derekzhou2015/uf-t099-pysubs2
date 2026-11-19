@@ -431,6 +431,11 @@ class SubstationFormat(FormatBase):
                     return str(alignment.to_ssa_alignment())
                 else:
                     return str(alignment.value)
+            case "text":
+                # A raw line break would split the Dialogue line and silently truncate
+                # the subtitle (the reader treats every line as one event).  SubStation
+                # spells line breaks as \N, which is also what SSAEvent.plaintext uses.
+                return value.replace("\r\n", "\\N").replace("\r", "\\N").replace("\n", "\\N")
 
         match value:
             case bool():
