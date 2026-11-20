@@ -149,7 +149,7 @@ class SubripFormat(FormatBase):
         """
         See :meth:`pysubs2.formats.FormatBase.to_file()`
 
-        Italic, underline and strikeout styling is supported.
+        Italic, underline, strikeout and bold styling is supported.
 
         Keyword args:
             apply_styles: If False, do not write any styling (ignore line style
@@ -187,6 +187,8 @@ class SubripFormat(FormatBase):
                             fragment = f"<u>{fragment}</u>"
                         if sty.strikeout:
                             fragment = f"<s>{fragment}</s>"
+                        if sty.bold:
+                            fragment = f"<b>{fragment}</b>"
                     body.append(fragment)
 
             return re.sub("\n+", "\n", "".join(body).strip())

@@ -418,6 +418,10 @@ class SubstationFormat(FormatBase):
         match field:
             case "start" | "end":
                 return cls.ms_to_timestamp(value)
+            case "text":
+                # raw newlines would break the line-based file format (and truncate
+                # the event on re-read); normalize them to \N override tags
+                return value.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\\N")
             case "marked":
                 return f"Marked={value:d}"
             case "alignment":

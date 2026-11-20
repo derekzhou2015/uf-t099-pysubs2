@@ -206,7 +206,9 @@ class TTMLFormat(FormatBase):
     @classmethod
     def _append_text(cls, elem: ET.Element, text: str) -> None:
         text = text.replace("\\h", " ")
-        chunks = re.split(r"\\[Nn]", text)
+        # split on \n/\N override tags as well as raw newlines; a raw newline
+        # written literally into the XML would be read back as plain whitespace
+        chunks = re.split(r"\\[Nn]|\r\n|[\r\n]", text)
         nodes: list[ET.Element | str] = []
         for i, chunk in enumerate(chunks):
             if i > 0:
